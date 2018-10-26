@@ -115,12 +115,13 @@ function App() {
     <div>
       <CursorCrosshair colour="#333333" />
 
+      <Canvas layers={layers} leftOffset={sidebarWidth} />
+
       <ShapeSidebar
         items={availableShapes}
         width={sidebarWidth}
         onSelection={onShapeSelection}
       />
-      <Canvas layers={layers} leftOffset={sidebarWidth} />
 
       <LayerSidebar layers={layers} width={sidebarWidth} />
 
