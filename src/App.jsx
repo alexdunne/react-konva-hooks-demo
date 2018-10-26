@@ -3,7 +3,7 @@ import { useImmer } from "use-immer";
 import { Rect, Text } from "react-konva";
 import uuid from "uuid";
 
-import { Sidebar } from "./components/Sidebar";
+import { ShapeSidebar } from "./components/ShapeSidebar";
 import { Canvas } from "./components/Canvas";
 import { Actions } from "./components/Actions";
 
@@ -110,7 +110,7 @@ function App() {
 
   return (
     <div>
-      <Sidebar
+      <ShapeSidebar
         items={availableShapes}
         width={sidebarWidth}
         onSelection={onShapeSelection}

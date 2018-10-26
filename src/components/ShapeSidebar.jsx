@@ -21,7 +21,7 @@ const ShapeListItem = styled("li")`
   margin-bottom: 8px;
 `;
 
-export function Sidebar(props) {
+export function ShapeSidebar(props) {
   return (
     <Container width={props.width}>
       <ShapeList>
