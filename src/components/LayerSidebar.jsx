@@ -17,7 +17,7 @@ const LayerList = styled("ul")`
 `;
 
 const LayerListItem = styled("li")`
-  cursor: pointer;
+  user-select: none;
   margin-bottom: 8px;
 `;
 

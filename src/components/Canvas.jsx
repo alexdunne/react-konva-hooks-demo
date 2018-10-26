@@ -7,7 +7,7 @@ export function Canvas(props) {
   const windowSize = useWindowSize();
 
   return (
-    <div style={{ paddingLeft: props.leftOffset }}>
+    <div style={{ position: "relative", paddingLeft: props.leftOffset }}>
       <Stage
         height={windowSize.height}
         width={windowSize.width - props.leftOffset}

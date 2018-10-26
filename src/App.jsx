@@ -117,14 +117,15 @@ function App() {
         width={sidebarWidth}
         onSelection={onShapeSelection}
       />
-      <Canvas layers={layers} leftOffset={sidebarWidth}>
-        <Actions
-          onSave={() => {
-            localStorage.setItem("layers", JSON.stringify(state));
-          }}
-        />
-      </Canvas>
+      <Canvas layers={layers} leftOffset={sidebarWidth} />
+
       <LayerSidebar layers={layers} width={sidebarWidth} />
+
+      <Actions
+        onSave={() => {
+          localStorage.setItem("layers", JSON.stringify(state));
+        }}
+      />
     </div>
   );
 }
