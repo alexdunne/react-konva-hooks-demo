@@ -113,7 +113,7 @@ function App() {
 
   return (
     <div>
-      <CursorCrosshair colour="#333333" />
+      <CursorCrosshair colour="#333333" leftOffset={sidebarWidth} />
 
       <Canvas layers={layers} leftOffset={sidebarWidth} />
 

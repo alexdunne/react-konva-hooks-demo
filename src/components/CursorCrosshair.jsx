@@ -31,6 +31,21 @@ export function CursorCrosshair(props) {
       >
         {/* Horizontal line */}
       </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: y + 10,
+          left: x + 10,
+          backgroundColor: "#eeeeee",
+          color: "#333333",
+          borderRadius: "8px",
+          padding: "4px 6px",
+          fontSize: "14px"
+        }}
+      >
+        {x - props.leftOffset}, {y}
+      </div>
     </>
   );
 }
