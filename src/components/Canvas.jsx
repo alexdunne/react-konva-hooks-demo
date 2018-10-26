@@ -16,6 +16,8 @@ export function Canvas(props) {
           <Layer key={layer.id}>{layer.shapes}</Layer>
         ))}
       </Stage>
+
+      {props.children}
     </div>
   );
 }

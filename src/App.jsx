@@ -6,6 +6,7 @@ import uuid from "uuid";
 import { ShapeSidebar } from "./components/ShapeSidebar";
 import { Canvas } from "./components/Canvas";
 import { Actions } from "./components/Actions";
+import { LayerSidebar } from "./components/LayerSidebar";
 
 const shapesMap = {
   Text: Text,
@@ -79,7 +80,7 @@ function App() {
   }
 
   const layers = useMemo(() =>
-    state.layerIds.map(layerId => {
+    state.layerIds.map((layerId, index) => {
       const layer = state.layers[layerId];
 
       const shapes = layer.shapes.map(shapeId => {
@@ -103,6 +104,7 @@ function App() {
 
       return {
         id: layerId,
+        name: state.shapes[layer.shapes[0]].componentName,
         shapes
       };
     })
@@ -115,12 +117,14 @@ function App() {
         width={sidebarWidth}
         onSelection={onShapeSelection}
       />
-      <Canvas layers={layers} leftOffset={sidebarWidth} />
-      <Actions
-        onSave={() => {
-          localStorage.setItem("layers", JSON.stringify(state));
-        }}
-      />
+      <Canvas layers={layers} leftOffset={sidebarWidth}>
+        <Actions
+          onSave={() => {
+            localStorage.setItem("layers", JSON.stringify(state));
+          }}
+        />
+      </Canvas>
+      <LayerSidebar layers={layers} width={sidebarWidth} />
     </div>
   );
 }
