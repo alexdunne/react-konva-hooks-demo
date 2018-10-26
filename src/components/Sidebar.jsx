@@ -1,5 +1,4 @@
 import React from "react";
-import { Text, Rect } from "react-konva";
 import styled from "react-emotion";
 
 const Container = styled("div")`
@@ -23,36 +22,13 @@ const ShapeListItem = styled("li")`
 `;
 
 export function Sidebar(props) {
-  const items = [
-    {
-      id: "text",
-      label: "Text",
-      shape: Text,
-      defaultOptions: {
-        text: "Test"
-      }
-    },
-    {
-      id: "rectangle",
-      label: "Rectangle",
-      shape: Rect,
-      defaultOptions: {
-        x: 50,
-        y: 50,
-        height: 100,
-        width: 200,
-        fill: "red"
-      }
-    }
-  ];
-
   return (
     <Container width={props.width}>
       <ShapeList>
-        {items.map(item => (
+        {props.items.map(item => (
           <ShapeListItem
             key={item.id}
-            onClick={() => props.onSelection(item.shape, item.defaultOptions)}
+            onClick={() => props.onSelection(item.value, item.defaultOptions)}
           >
             {item.label}
           </ShapeListItem>
