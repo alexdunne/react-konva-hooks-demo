@@ -1,9 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
+import { useWindowSize } from "./lib/WindowSize";
 
-class App extends Component {
-  render() {
-    return <main />;
-  }
+function App() {
+  const windowSize = useWindowSize();
+
+  return (
+    <div>
+      <p>Height: {windowSize.height}</p>
+      <p>Width: {windowSize.width}</p>
+    </div>
+  );
 }
 
 export default App;
