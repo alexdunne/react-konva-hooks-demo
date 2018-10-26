@@ -7,6 +7,7 @@ import { ShapeSidebar } from "./components/ShapeSidebar";
 import { Canvas } from "./components/Canvas";
 import { Actions } from "./components/Actions";
 import { LayerSidebar } from "./components/LayerSidebar";
+import { CursorCrosshair } from "./components/CursorCrosshair";
 
 const shapesMap = {
   Text: Text,
@@ -112,6 +113,8 @@ function App() {
 
   return (
     <div>
+      <CursorCrosshair colour="#333333" />
+
       <ShapeSidebar
         items={availableShapes}
         width={sidebarWidth}
