@@ -11,3 +11,5 @@ git clone git@github.com:alexdunne/react-konva-hooks-demo.git
 cd react-konva-hooks-demo
 yarn start
 ```
+
+Or visit the demo website https://react-konva-hooks-demo.netlify.com/
