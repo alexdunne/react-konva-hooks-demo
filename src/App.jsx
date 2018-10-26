@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useImmer } from "use-immer";
 import { Rect, Text } from "react-konva";
 import uuid from "uuid";
 
 import { Sidebar } from "./components/Sidebar";
 import { Canvas } from "./components/Canvas";
+import { Actions } from "./components/Actions";
 
 const shapesMap = {
   Text: Text,
@@ -44,6 +45,18 @@ function App() {
   });
 
   const sidebarWidth = 200;
+
+  useEffect(() => {
+    updateLayers(draft => {
+      const layers = localStorage.getItem("layers");
+
+      if (layers) {
+        return JSON.parse(layers);
+      }
+
+      return draft;
+    });
+  }, []);
 
   function onShapeSelection(componentName, options) {
     updateLayers(draft => {
@@ -103,6 +116,11 @@ function App() {
         onSelection={onShapeSelection}
       />
       <Canvas layers={layers} leftOffset={sidebarWidth} />
+      <Actions
+        onSave={() => {
+          localStorage.setItem("layers", JSON.stringify(state));
+        }}
+      />
     </div>
   );
 }
