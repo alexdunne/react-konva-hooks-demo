@@ -1,8 +1,17 @@
 import React from "react";
 import { useMousePosition } from "../lib/MousePosition";
+import { useWindowSize } from "../lib/WindowSize";
 
 export function CursorCrosshair(props) {
+  const { colour, leftOffset, rightOffset } = props;
+
   const { x, y } = useMousePosition();
+  const windowSize = useWindowSize(window);
+
+  const minX = leftOffset;
+  const maxX = windowSize.width - rightOffset;
+
+  const left = x < minX ? minX : x > maxX ? maxX : x;
 
   return (
     <>
@@ -10,10 +19,10 @@ export function CursorCrosshair(props) {
         style={{
           position: "absolute",
           top: 0,
-          left: x,
+          left: left,
           height: "100%",
           width: "1px",
-          backgroundColor: props.colour
+          backgroundColor: colour
         }}
       >
         {/* Vertical line */}
@@ -23,10 +32,10 @@ export function CursorCrosshair(props) {
         style={{
           position: "absolute",
           top: y,
-          left: 0,
-          width: "100%",
+          left: leftOffset,
+          width: `calc(100% - ${leftOffset}px - ${rightOffset}px)`,
           height: "1px",
-          backgroundColor: props.colour
+          backgroundColor: colour
         }}
       >
         {/* Horizontal line */}
@@ -36,7 +45,7 @@ export function CursorCrosshair(props) {
         style={{
           position: "absolute",
           top: y + 10,
-          left: x + 10,
+          left: Math.min(left + 10, windowSize.width - rightOffset - 75),
           backgroundColor: "#eeeeee",
           color: "#333333",
           borderRadius: "8px",
@@ -44,7 +53,7 @@ export function CursorCrosshair(props) {
           fontSize: "14px"
         }}
       >
-        {x - props.leftOffset}, {y}
+        {x - leftOffset}, {y}
       </div>
     </>
   );

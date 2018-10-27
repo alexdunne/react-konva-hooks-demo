@@ -2,11 +2,8 @@ import React from "react";
 import styled from "react-emotion";
 
 const Container = styled("div")`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: ${props => props.width}px;
-  height: 100%;
+  width: 100%;
+  height: 100vh;
   background-color: #eeeeee;
 `;
 
@@ -23,7 +20,7 @@ const LayerListItem = styled("li")`
 
 export function LayerSidebar(props) {
   return (
-    <Container width={props.width}>
+    <Container>
       <LayerList>
         {props.layers.map(layer => (
           <LayerListItem key={layer.id}>{layer.name}</LayerListItem>

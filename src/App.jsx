@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useImmer } from "use-immer";
 import { Rect, Text } from "react-konva";
 import uuid from "uuid";
@@ -8,6 +8,7 @@ import { Canvas } from "./components/Canvas";
 import { Actions } from "./components/Actions";
 import { LayerSidebar } from "./components/LayerSidebar";
 import { CursorCrosshair } from "./components/CursorCrosshair";
+import { Flex } from "./components/Flex";
 
 const shapesMap = {
   Text: Text,
@@ -40,13 +41,15 @@ const availableShapes = [
 ];
 
 function App() {
+  const sidebarWidth = 200;
+
   const [state, updateLayers] = useImmer({
     shapes: {},
     layers: {},
     layerIds: []
   });
 
-  const sidebarWidth = 200;
+  const canvasContainerRef = useRef(null);
 
   useEffect(() => {
     updateLayers(draft => {
@@ -113,23 +116,35 @@ function App() {
 
   return (
     <div>
-      <CursorCrosshair colour="#333333" leftOffset={sidebarWidth} />
-
-      <Canvas layers={layers} leftOffset={sidebarWidth} />
-
-      <ShapeSidebar
-        items={availableShapes}
-        width={sidebarWidth}
-        onSelection={onShapeSelection}
+      <CursorCrosshair
+        colour="#333333"
+        leftOffset={sidebarWidth}
+        rightOffset={sidebarWidth}
       />
 
-      <LayerSidebar layers={layers} width={sidebarWidth} />
-
-      <Actions
-        onSave={() => {
-          localStorage.setItem("layers", JSON.stringify(state));
-        }}
-      />
+      <Flex direction="row">
+        <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
+          <ShapeSidebar
+            items={availableShapes}
+            width={sidebarWidth}
+            onSelection={onShapeSelection}
+          />
+        </Flex>
+        <Flex innerRef={canvasContainerRef}>
+          <Canvas
+            containerElement={canvasContainerRef.current}
+            layers={layers}
+          />
+          <Actions
+            onSave={() => {
+              localStorage.setItem("layers", JSON.stringify(state));
+            }}
+          />
+        </Flex>
+        <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
+          <LayerSidebar layers={layers} width={sidebarWidth} />
+        </Flex>
+      </Flex>
     </div>
   );
 }
