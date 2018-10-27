@@ -1,5 +1,10 @@
-import React from "react";
+import * as React from "react";
 import styled from "react-emotion";
+
+interface LayerSidebarProps {
+  layers: CanvasLayer[];
+  width: number;
+}
 
 const Container = styled("div")`
   width: 100%;
@@ -18,7 +23,7 @@ const LayerListItem = styled("li")`
   margin-bottom: 8px;
 `;
 
-export function LayerSidebar(props) {
+export function LayerSidebar(props: LayerSidebarProps) {
   return (
     <Container>
       <LayerList>

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useMousePosition() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  function handleMouseMove(e) {
+  function handleMouseMove(e: { clientX: number; clientY: number }) {
     setPosition({
       x: e.clientX,
       y: e.clientY

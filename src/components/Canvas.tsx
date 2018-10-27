@@ -1,9 +1,15 @@
-import React from "react";
+import * as React from "react";
 import { Stage, Layer } from "react-konva";
 
 import { useElementSize } from "../lib/ElementSize";
 
-export function Canvas(props) {
+interface CanvasProps {
+  containerElement: HTMLElement | null;
+  children?: React.ReactNode;
+  layers: CanvasLayer[];
+}
+
+export function Canvas(props: CanvasProps) {
   const elementSize = useElementSize(props.containerElement);
 
   return (

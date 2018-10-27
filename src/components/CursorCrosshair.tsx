@@ -1,12 +1,18 @@
-import React from "react";
+import * as React from "react";
 import { useMousePosition } from "../lib/MousePosition";
 import { useWindowSize } from "../lib/WindowSize";
 
-export function CursorCrosshair(props) {
+interface CursorCrosshairProps {
+  colour: string;
+  leftOffset: number;
+  rightOffset: number;
+}
+
+export function CursorCrosshair(props: CursorCrosshairProps) {
   const { colour, leftOffset, rightOffset } = props;
 
   const { x, y } = useMousePosition();
-  const windowSize = useWindowSize(window);
+  const windowSize = useWindowSize();
 
   const minX = leftOffset;
   const maxX = windowSize.width - rightOffset;
@@ -19,7 +25,7 @@ export function CursorCrosshair(props) {
         style={{
           position: "absolute",
           top: 0,
-          left: left,
+          left,
           height: "100%",
           width: "1px",
           backgroundColor: colour

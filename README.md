@@ -9,6 +9,7 @@ To run this project locally you'll need to:
 ```
 git clone git@github.com:alexdunne/react-konva-hooks-demo.git
 cd react-konva-hooks-demo
+yarn install
 yarn start
 ```
 

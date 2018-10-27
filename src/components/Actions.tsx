@@ -1,5 +1,9 @@
-import React from "react";
+import * as React from "react";
 import styled from "react-emotion";
+
+interface Props {
+  onSave: () => void;
+}
 
 const ActionBar = styled("div")`
   position: absolute;
@@ -9,7 +13,7 @@ const ActionBar = styled("div")`
 
 const Action = styled("button")``;
 
-export function Actions(props) {
+export function Actions(props: Props) {
   return (
     <ActionBar>
       <Action onClick={props.onSave}>Save</Action>

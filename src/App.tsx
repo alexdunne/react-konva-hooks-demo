@@ -1,18 +1,18 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import { useImmer } from "use-immer";
+import * as React from "react";
 import { Rect, Text } from "react-konva";
-import uuid from "uuid";
+import { useImmer } from "use-immer";
+import * as uuid from "uuid";
 
-import { ShapeSidebar } from "./components/ShapeSidebar";
-import { Canvas } from "./components/Canvas";
 import { Actions } from "./components/Actions";
-import { LayerSidebar } from "./components/LayerSidebar";
+import { Canvas } from "./components/Canvas";
 import { CursorCrosshair } from "./components/CursorCrosshair";
 import { Flex } from "./components/Flex";
+import { LayerSidebar } from "./components/LayerSidebar";
+import { ShapeSidebar } from "./components/ShapeSidebar";
 
 const shapesMap = {
-  Text: Text,
-  Rect: Rect
+  Rect,
+  Text
 };
 
 const availableShapes = [
@@ -49,22 +49,22 @@ function App() {
     layerIds: []
   });
 
-  const canvasContainerRef = useRef(null);
+  const canvasContainerRef = React.useRef(null);
 
-  useEffect(() => {
-    updateLayers(draft => {
-      const layers = localStorage.getItem("layers");
+  React.useEffect(() => {
+    updateLayers((draft: any) => {
+      const savedLayers = localStorage.getItem("layers");
 
-      if (layers) {
-        return JSON.parse(layers);
+      if (savedLayers) {
+        return JSON.parse(savedLayers);
       }
 
       return draft;
     });
   }, []);
 
-  function onShapeSelection(componentName, options) {
-    updateLayers(draft => {
+  function onShapeSelection(componentName: string, options: any) {
+    updateLayers((draft: any) => {
       const layerId = uuid.v4();
       const shapeId = uuid.v4();
 
@@ -74,8 +74,8 @@ function App() {
     });
   }
 
-  function onShapeUpdated(shapeId, newOptions) {
-    updateLayers(draft => {
+  function onShapeUpdated(shapeId: string, newOptions: any) {
+    updateLayers((draft: any) => {
       draft.shapes[shapeId].options = {
         ...draft.shapes[shapeId].options,
         ...newOptions
@@ -83,11 +83,11 @@ function App() {
     });
   }
 
-  const layers = useMemo(() =>
-    state.layerIds.map((layerId, index) => {
+  const layers = React.useMemo(() =>
+    state.layerIds.map((layerId: string) => {
       const layer = state.layers[layerId];
 
-      const shapes = layer.shapes.map(shapeId => {
+      const shapes = layer.shapes.map((shapeId: string) => {
         const shape = state.shapes[shapeId];
         const Component = shapesMap[shape.componentName];
 
@@ -96,7 +96,7 @@ function App() {
             key={shapeId}
             {...shape.options}
             draggable
-            onDragEnd={({ evt }) => {
+            onDragEnd={({ evt }: any) => {
               onShapeUpdated(shapeId, {
                 x: evt.dragEndNode.attrs.x,
                 y: evt.dragEndNode.attrs.y
@@ -125,7 +125,7 @@ function App() {
       <Flex direction="row">
         <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
           <ShapeSidebar
-            items={availableShapes}
+            shapes={availableShapes}
             width={sidebarWidth}
             onSelection={onShapeSelection}
           />
