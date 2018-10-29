@@ -5,15 +5,22 @@ interface SidebarProps {
   children: React.ReactNode;
 }
 
-const Container = styled("div")`
+const Container = styled("section")`
   width: 100%;
   height: 100vh;
   background-color: #eeeeee;
 `;
 
+const Header = styled("h2")`
+  margin-top: 0;
+  font-weight: 400;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+`;
+
 const List = styled("ul")`
   list-style: none;
-  padding: 16px 0 0 16px;
+  padding: 16px 16px 0 16px;
   margin: 0;
 `;
 
@@ -30,6 +37,7 @@ function Sidebar(props: SidebarProps) {
   );
 }
 
+Sidebar.Header = Header;
 Sidebar.Item = SidebarItem;
 
 export { Sidebar };

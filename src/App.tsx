@@ -6,10 +6,11 @@ import cloneDeep from "lodash/cloneDeep";
 import { Actions } from "./components/Actions";
 import { CursorCrosshair } from "./components/CursorCrosshair";
 import { Flex } from "./components/Flex";
+import { ShapeEditor } from "./components/ShapeEditor/ShapeEditor";
 import { Sidebar } from "./components/Sidebar";
 import { useElementSize } from "./lib/ElementSize";
 
-enum ShapeTypes {
+export enum ShapeTypes {
   Text = "Text",
   Rectangle = "Rect"
 }
@@ -43,7 +44,8 @@ const availableShapes = {
     options: {
       x: 0,
       y: 0,
-      text: "Test"
+      text: "Test",
+      fill: "#000000"
     }
   },
   [ShapeTypes.Rectangle]: {
@@ -64,6 +66,7 @@ function App() {
 
   const [shapes, setShapes] = React.useState({});
   const [shapesOrder, setShapesOrder] = React.useState<string[]>([]);
+  const [activeShapeId, setActiveShapeId] = React.useState<string | null>(null);
   const canvasContainerRef = React.useRef(null);
   const elementSize = useElementSize(canvasContainerRef.current);
 
@@ -105,28 +108,10 @@ function App() {
   }
 
   const shapesList = React.useMemo(() =>
-    shapesOrder.map(shapeId => {
-      const shape: Shape = shapes[shapeId];
-      const Component = shapesMap[shape.type];
-
-      return {
-        id: shapeId,
-        name: shape.label,
-        shape: (
-          <Component
-            key={shapeId}
-            {...shape.options}
-            draggable
-            onDragEnd={({ evt }: any) => {
-              onShapeUpdated(shapeId, {
-                x: evt.dragEndNode.attrs.x,
-                y: evt.dragEndNode.attrs.y
-              });
-            }}
-          />
-        )
-      };
-    })
+    shapesOrder.map(shapeId => ({
+      ...shapes[shapeId],
+      id: shapeId
+    }))
   );
 
   return (
@@ -160,7 +145,23 @@ function App() {
         <Flex style={{ position: "relative" }} innerRef={canvasContainerRef}>
           <Stage height={elementSize.height} width={elementSize.width}>
             <Layer>
-              {shapesList.map(shapeComponent => shapeComponent.shape)}
+              {shapesList.map(shape => {
+                const Component = shapesMap[shape.type];
+
+                return (
+                  <Component
+                    key={shape.id}
+                    {...shape.options}
+                    draggable
+                    onDragEnd={({ evt }: any) => {
+                      onShapeUpdated(shape.id, {
+                        x: evt.dragEndNode.attrs.x,
+                        y: evt.dragEndNode.attrs.y
+                      });
+                    }}
+                  />
+                );
+              })}
             </Layer>
           </Stage>
           <Actions
@@ -177,11 +178,31 @@ function App() {
         </Flex>
         <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
           <Sidebar>
-            {shapesList.map(shapeComponent => (
-              <Sidebar.Item key={shapeComponent.id}>
-                {shapeComponent.name}
-              </Sidebar.Item>
-            ))}
+            <Sidebar.Header>Layers</Sidebar.Header>
+
+            {shapesList.map(
+              shape =>
+                shape.id === activeShapeId ? (
+                  <Sidebar.Item key={shape.id}>
+                    {shape.label}
+
+                    <ShapeEditor
+                      type={shape.type}
+                      options={shape.options}
+                      onChange={newOptions => {
+                        onShapeUpdated(shape.id, newOptions);
+                      }}
+                    />
+                  </Sidebar.Item>
+                ) : (
+                  <Sidebar.Item
+                    key={shape.id}
+                    onClick={() => setActiveShapeId(shape.id)}
+                  >
+                    {shape.label}
+                  </Sidebar.Item>
+                )
+            )}
           </Sidebar>
         </Flex>
       </Flex>
