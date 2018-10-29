@@ -59,7 +59,7 @@ export function CursorCrosshair(props: CursorCrosshairProps) {
           fontSize: "14px"
         }}
       >
-        {x - leftOffset}, {y}
+        {left - leftOffset}, {y}
       </div>
     </>
   );
