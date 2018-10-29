@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Layer, Rect, Stage, Text } from "react-konva";
+import { Circle, Layer, Rect, Stage, Text } from "react-konva";
 import * as uuid from "uuid";
 import cloneDeep from "lodash/cloneDeep";
 
@@ -11,8 +11,9 @@ import { Sidebar } from "./components/Sidebar";
 import { useElementSize } from "./lib/ElementSize";
 
 export enum ShapeTypes {
-  Text = "Text",
-  Rectangle = "Rect"
+  Circle = "Circle",
+  Rectangle = "Rect",
+  Text = "Text"
 }
 
 interface NewShape {
@@ -33,19 +34,20 @@ interface SavedState {
 }
 
 const shapesMap = {
+  [ShapeTypes.Circle]: Circle,
   [ShapeTypes.Rectangle]: Rect,
   [ShapeTypes.Text]: Text
 };
 
 const availableShapes = {
-  [ShapeTypes.Text]: {
-    label: "Text",
-    type: ShapeTypes.Text,
+  [ShapeTypes.Circle]: {
+    label: "Circle",
+    type: ShapeTypes.Circle,
     options: {
-      x: 0,
-      y: 0,
-      text: "Test",
-      fill: "#000000"
+      x: 100,
+      y: 100,
+      radius: 50,
+      fill: "blue"
     }
   },
   [ShapeTypes.Rectangle]: {
@@ -57,6 +59,16 @@ const availableShapes = {
       height: 100,
       width: 200,
       fill: "red"
+    }
+  },
+  [ShapeTypes.Text]: {
+    label: "Text",
+    type: ShapeTypes.Text,
+    options: {
+      x: 0,
+      y: 0,
+      text: "Test",
+      fill: "#000000"
     }
   }
 };
@@ -127,10 +139,10 @@ function App() {
           <Sidebar>
             <Sidebar.Item
               onClick={() =>
-                onNewShapeSelected(availableShapes[ShapeTypes.Text])
+                onNewShapeSelected(availableShapes[ShapeTypes.Circle])
               }
             >
-              {availableShapes[ShapeTypes.Text].label}
+              {availableShapes[ShapeTypes.Circle].label}
             </Sidebar.Item>
 
             <Sidebar.Item
@@ -139,6 +151,14 @@ function App() {
               }
             >
               {availableShapes[ShapeTypes.Rectangle].label}
+            </Sidebar.Item>
+
+            <Sidebar.Item
+              onClick={() =>
+                onNewShapeSelected(availableShapes[ShapeTypes.Text])
+              }
+            >
+              {availableShapes[ShapeTypes.Text].label}
             </Sidebar.Item>
           </Sidebar>
         </Flex>
