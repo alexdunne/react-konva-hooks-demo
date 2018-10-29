@@ -12,6 +12,7 @@
     "object-literal-sort-keys": false,
     "jsx-boolean-value": false,
     "jsx-no-lambda": false,
-    "interface-name": false
+    "interface-name": false,
+    "no-console": false
   }
 }
