@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { ShapeTypes } from "../../App";
+import { RectShapeEditor } from "./RectShapeEditor";
 import { TextShapeEditor } from "./TextShapeEditor";
 
 export interface EditorProps {
@@ -16,6 +17,7 @@ export function ShapeEditor(props: ShapeEditorProps) {
   const { type, ...rest } = props;
 
   const shapeToEditorMap = {
+    [ShapeTypes.Rectangle]: RectShapeEditor,
     [ShapeTypes.Text]: TextShapeEditor
   };
 
