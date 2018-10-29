@@ -1,36 +1,56 @@
 import * as React from "react";
-import { Rect, Text } from "react-konva";
-import { useImmer } from "use-immer";
+import { Layer, Rect, Stage, Text } from "react-konva";
 import * as uuid from "uuid";
+import cloneDeep from "lodash/cloneDeep";
 
 import { Actions } from "./components/Actions";
-import { Canvas } from "./components/Canvas";
 import { CursorCrosshair } from "./components/CursorCrosshair";
 import { Flex } from "./components/Flex";
 import { LayerSidebar } from "./components/LayerSidebar";
 import { ShapeSidebar } from "./components/ShapeSidebar";
+import { useElementSize } from "./lib/ElementSize";
+
+enum ShapeTypes {
+  Text = "Text",
+  Rectangle = "Rect"
+}
+
+interface NewShape {
+  label: string;
+  type: ShapeTypes;
+  options: {
+    [key: string]: any;
+  };
+}
+
+type Shape = { id: string } & NewShape;
+
+interface SavedState {
+  shapes: {
+    [key: string]: Shape;
+  };
+  shapesOrder: string[];
+}
 
 const shapesMap = {
-  Rect,
-  Text
+  [ShapeTypes.Rectangle]: Rect,
+  [ShapeTypes.Text]: Text
 };
 
-const availableShapes = [
-  {
-    id: "text",
+const availableShapes = {
+  [ShapeTypes.Text]: {
     label: "Text",
-    value: "Text",
-    defaultOptions: {
+    type: ShapeTypes.Text,
+    options: {
       x: 0,
       y: 0,
       text: "Test"
     }
   },
-  {
-    id: "rectangle",
+  [ShapeTypes.Rectangle]: {
     label: "Rectangle",
-    value: "Rect",
-    defaultOptions: {
+    type: ShapeTypes.Rectangle,
+    options: {
       x: 50,
       y: 50,
       height: 100,
@@ -38,60 +58,62 @@ const availableShapes = [
       fill: "red"
     }
   }
-];
+};
 
 function App() {
   const sidebarWidth = 200;
 
-  const [state, updateLayers] = useImmer({
-    shapes: {},
-    layers: {},
-    layerIds: []
-  });
-
+  const [shapes, setShapes] = React.useState({});
+  const [shapesOrder, setShapesOrder] = React.useState<string[]>([]);
   const canvasContainerRef = React.useRef(null);
+  const elementSize = useElementSize(canvasContainerRef.current);
 
   React.useEffect(() => {
-    updateLayers((draft: any) => {
-      const savedLayers = localStorage.getItem("layers");
+    const savedState = localStorage.getItem("state");
 
-      if (savedLayers) {
-        return JSON.parse(savedLayers);
-      }
+    if (!savedState) {
+      return;
+    }
 
-      return draft;
-    });
+    const parsedSavedState: SavedState = JSON.parse(savedState);
+
+    if (!parsedSavedState) {
+      return;
+    }
+
+    setShapes(parsedSavedState.shapes);
+    setShapesOrder(parsedSavedState.shapesOrder);
   }, []);
 
-  function onShapeSelection(componentName: string, options: any) {
-    updateLayers((draft: any) => {
-      const layerId = uuid.v4();
-      const shapeId = uuid.v4();
+  function onNewShapeSelected(newShape: NewShape) {
+    const shapeId = uuid.v4();
 
-      draft.shapes[shapeId] = { componentName, options };
-      draft.layers[layerId] = { id: uuid.v4(), shapes: [shapeId] };
-      draft.layerIds.push(layerId);
-    });
+    setShapes({ ...shapes, [shapeId]: cloneDeep(newShape) });
+    setShapesOrder([...shapesOrder, shapeId]);
   }
 
   function onShapeUpdated(shapeId: string, newOptions: any) {
-    updateLayers((draft: any) => {
-      draft.shapes[shapeId].options = {
-        ...draft.shapes[shapeId].options,
-        ...newOptions
-      };
+    setShapes({
+      ...shapes,
+      [shapeId]: {
+        ...shapes[shapeId],
+        options: {
+          ...shapes[shapeId].options,
+          ...newOptions
+        }
+      }
     });
   }
 
-  const layers = React.useMemo(() =>
-    state.layerIds.map((layerId: string) => {
-      const layer = state.layers[layerId];
+  const shapesList = React.useMemo(() =>
+    shapesOrder.map(shapeId => {
+      const shape: Shape = shapes[shapeId];
+      const Component = shapesMap[shape.type];
 
-      const shapes = layer.shapes.map((shapeId: string) => {
-        const shape = state.shapes[shapeId];
-        const Component = shapesMap[shape.componentName];
-
-        return (
+      return {
+        id: shapeId,
+        name: shape.label,
+        shape: (
           <Component
             key={shapeId}
             {...shape.options}
@@ -103,13 +125,7 @@ function App() {
               });
             }}
           />
-        );
-      });
-
-      return {
-        id: layerId,
-        name: state.shapes[layer.shapes[0]].componentName,
-        shapes
+        )
       };
     })
   );
@@ -124,25 +140,52 @@ function App() {
 
       <Flex direction="row">
         <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
-          <ShapeSidebar
-            shapes={availableShapes}
-            width={sidebarWidth}
-            onSelection={onShapeSelection}
-          />
+          <ShapeSidebar>
+            <ShapeSidebar.Item
+              onClick={() =>
+                onNewShapeSelected(availableShapes[ShapeTypes.Text])
+              }
+            >
+              {availableShapes[ShapeTypes.Text].label}
+            </ShapeSidebar.Item>
+
+            <ShapeSidebar.Item
+              onClick={() =>
+                onNewShapeSelected(availableShapes[ShapeTypes.Rectangle])
+              }
+            >
+              {availableShapes[ShapeTypes.Rectangle].label}
+            </ShapeSidebar.Item>
+          </ShapeSidebar>
         </Flex>
-        <Flex innerRef={canvasContainerRef}>
-          <Canvas
-            containerElement={canvasContainerRef.current}
-            layers={layers}
-          />
-          <Actions
-            onSave={() => {
-              localStorage.setItem("layers", JSON.stringify(state));
-            }}
-          />
+        <Flex style={{ position: "relative" }} innerRef={canvasContainerRef}>
+          <div style={{ position: "relative" }}>
+            <Stage height={elementSize.height} width={elementSize.width}>
+              <Layer>
+                {shapesList.map(shapeComponent => shapeComponent.shape)}
+              </Layer>
+            </Stage>
+            <Actions
+              onSave={() => {
+                localStorage.setItem(
+                  "state",
+                  JSON.stringify({
+                    shapes,
+                    shapesOrder
+                  })
+                );
+              }}
+            />
+          </div>
         </Flex>
         <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
-          <LayerSidebar layers={layers} width={sidebarWidth} />
+          <LayerSidebar>
+            {shapesList.map(shapeComponent => (
+              <LayerSidebar.Item key={shapeComponent.id}>
+                {shapeComponent.name}
+              </LayerSidebar.Item>
+            ))}
+          </LayerSidebar>
         </Flex>
       </Flex>
     </div>

@@ -1,17 +1,8 @@
 import * as React from "react";
 import styled from "react-emotion";
 
-interface ShapeConfig {
-  id: string;
-  label: string;
-  value: string;
-  defaultOptions: any;
-}
-
 interface ShapeSidebarProps {
-  shapes: ShapeConfig[];
-  width: number;
-  onSelection: (value: string, options: any) => void;
+  children: React.ReactNode;
 }
 
 const Container = styled("div")`
@@ -31,19 +22,14 @@ const ShapeListItem = styled("li")`
   margin-bottom: 8px;
 `;
 
-export function ShapeSidebar(props: ShapeSidebarProps) {
+function ShapeSidebar(props: ShapeSidebarProps) {
   return (
     <Container>
-      <ShapeList>
-        {props.shapes.map(shape => (
-          <ShapeListItem
-            key={shape.id}
-            onClick={() => props.onSelection(shape.value, shape.defaultOptions)}
-          >
-            {shape.label}
-          </ShapeListItem>
-        ))}
-      </ShapeList>
+      <ShapeList>{props.children}</ShapeList>
     </Container>
   );
 }
+
+ShapeSidebar.Item = ShapeListItem;
+
+export { ShapeSidebar };

@@ -2,8 +2,7 @@ import * as React from "react";
 import styled from "react-emotion";
 
 interface LayerSidebarProps {
-  layers: CanvasLayer[];
-  width: number;
+  children: React.ReactNode;
 }
 
 const Container = styled("div")`
@@ -23,14 +22,14 @@ const LayerListItem = styled("li")`
   margin-bottom: 8px;
 `;
 
-export function LayerSidebar(props: LayerSidebarProps) {
+function LayerSidebar(props: LayerSidebarProps) {
   return (
     <Container>
-      <LayerList>
-        {props.layers.map(layer => (
-          <LayerListItem key={layer.id}>{layer.name}</LayerListItem>
-        ))}
-      </LayerList>
+      <LayerList>{props.children}</LayerList>
     </Container>
   );
 }
+
+LayerSidebar.Item = LayerListItem;
+
+export { LayerSidebar };
