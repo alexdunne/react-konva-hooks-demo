@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "react-emotion";
 
-interface ShapeSidebarProps {
+interface SidebarProps {
   children: React.ReactNode;
 }
 
@@ -11,25 +11,25 @@ const Container = styled("div")`
   background-color: #eeeeee;
 `;
 
-const ShapeList = styled("ul")`
+const List = styled("ul")`
   list-style: none;
   padding: 16px 0 0 16px;
   margin: 0;
 `;
 
-const ShapeListItem = styled("li")`
+const SidebarItem = styled("li")`
   cursor: pointer;
   margin-bottom: 8px;
 `;
 
-function ShapeSidebar(props: ShapeSidebarProps) {
+function Sidebar(props: SidebarProps) {
   return (
     <Container>
-      <ShapeList>{props.children}</ShapeList>
+      <List>{props.children}</List>
     </Container>
   );
 }
 
-ShapeSidebar.Item = ShapeListItem;
+Sidebar.Item = SidebarItem;
 
-export { ShapeSidebar };
+export { Sidebar };

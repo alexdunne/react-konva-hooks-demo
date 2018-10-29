@@ -6,8 +6,7 @@ import cloneDeep from "lodash/cloneDeep";
 import { Actions } from "./components/Actions";
 import { CursorCrosshair } from "./components/CursorCrosshair";
 import { Flex } from "./components/Flex";
-import { LayerSidebar } from "./components/LayerSidebar";
-import { ShapeSidebar } from "./components/ShapeSidebar";
+import { Sidebar } from "./components/Sidebar";
 import { useElementSize } from "./lib/ElementSize";
 
 enum ShapeTypes {
@@ -140,52 +139,50 @@ function App() {
 
       <Flex direction="row">
         <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
-          <ShapeSidebar>
-            <ShapeSidebar.Item
+          <Sidebar>
+            <Sidebar.Item
               onClick={() =>
                 onNewShapeSelected(availableShapes[ShapeTypes.Text])
               }
             >
               {availableShapes[ShapeTypes.Text].label}
-            </ShapeSidebar.Item>
+            </Sidebar.Item>
 
-            <ShapeSidebar.Item
+            <Sidebar.Item
               onClick={() =>
                 onNewShapeSelected(availableShapes[ShapeTypes.Rectangle])
               }
             >
               {availableShapes[ShapeTypes.Rectangle].label}
-            </ShapeSidebar.Item>
-          </ShapeSidebar>
+            </Sidebar.Item>
+          </Sidebar>
         </Flex>
         <Flex style={{ position: "relative" }} innerRef={canvasContainerRef}>
-          <div style={{ position: "relative" }}>
-            <Stage height={elementSize.height} width={elementSize.width}>
-              <Layer>
-                {shapesList.map(shapeComponent => shapeComponent.shape)}
-              </Layer>
-            </Stage>
-            <Actions
-              onSave={() => {
-                localStorage.setItem(
-                  "state",
-                  JSON.stringify({
-                    shapes,
-                    shapesOrder
-                  })
-                );
-              }}
-            />
-          </div>
+          <Stage height={elementSize.height} width={elementSize.width}>
+            <Layer>
+              {shapesList.map(shapeComponent => shapeComponent.shape)}
+            </Layer>
+          </Stage>
+          <Actions
+            onSave={() => {
+              localStorage.setItem(
+                "state",
+                JSON.stringify({
+                  shapes,
+                  shapesOrder
+                })
+              );
+            }}
+          />
         </Flex>
         <Flex style={{ maxWidth: `${sidebarWidth}px` }}>
-          <LayerSidebar>
+          <Sidebar>
             {shapesList.map(shapeComponent => (
-              <LayerSidebar.Item key={shapeComponent.id}>
+              <Sidebar.Item key={shapeComponent.id}>
                 {shapeComponent.name}
-              </LayerSidebar.Item>
+              </Sidebar.Item>
             ))}
-          </LayerSidebar>
+          </Sidebar>
         </Flex>
       </Flex>
     </div>
