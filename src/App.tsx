@@ -180,6 +180,7 @@ function App() {
                     key={shape.id}
                     {...shape.options}
                     draggable
+                    onMouseDown={() => setActiveShapeId(shape.id)}
                     onDragEnd={({ evt }: any) => {
                       onShapeUpdated(shape.id, {
                         x: evt.dragEndNode.attrs.x,
